@@ -1,12 +1,12 @@
-function Developer(name, price, basePerformance, description, buffs, imageName) {
+function Developer(name, price, basePerformance, description, buffs, id) {
   this.name = name;
-  this.price = price;
+  this.basePrice = price;
   this.basePerformance = basePerformance;
   this.description = description;
   this.buffs = buffs;
   this.level = 0;
   this.speed = 1;
-  this.imageName = imageName;
+  this.id = id;
   this.performance = function() {
     let performance = basePerformance + Math.floor((this.level * basePerformance) / 2);
     let extra_performance = 0;
@@ -19,6 +19,20 @@ function Developer(name, price, basePerformance, description, buffs, imageName) 
     );
     performance += extra_performance;
     return performance
+  };
+  this.levelUp = function (amount) {
+    let level = this.level + amount;
+    this.level = level;
+    this.buffs.forEach(
+      function (buff) {
+        if (!buff.active && buff.requiredLevel <= level){
+          buff.active = true;
+        }
+      }
+    )
+  };
+  this.price = function () {
+    return this.basePrice + this.basePrice * this.level * this.level
   }
 }
 
@@ -31,6 +45,22 @@ function Buff(requiredLevel, description, target, value) {
 }
 
 let developers = [
+  new Developer(
+    "Main Guy",
+    1,
+    1,
+    "It's you, or at least our imagination of you since we didn't implement character customization!",
+    [
+      new Buff(10, 'Increase your performance by 50%', 'performance', 0.5),
+      new Buff(25, 'Double your performance, wow!', 'performance', 1),
+      new Buff(50, 'And again! But only by 25%', 'performance', 0.25),
+      new Buff(100, 'Oh boy, another increase, this time by 40%', 'performance', 0.4),
+      new Buff(250, 'This is a small buff, but a big one as a whole, 10%', 'performance', 0.1),
+      new Buff(500, 'Will increase your performance by 60%, you are almost at the top', 'performance', 0.6),
+      new Buff(1000, 'Triple your base performance, best coder alive!', 'basePerformance', 2)
+    ],
+    'main-guy'
+  ),
   new Developer(
     "Noobium Foreverintern",
     40,
